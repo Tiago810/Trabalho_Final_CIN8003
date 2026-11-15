@@ -33,7 +33,7 @@ CREATE TABLE PAIS (
     sigla_coi CHAR(3) PRIMARY KEY,
     nome_oficial VARCHAR(100) NOT NULL UNIQUE,
     continente VARCHAR(20) NOT NULL,
-    CONSTRAINT chk_pais_sigla CHECK (LENGHT(sigla_coi) = 3),
+    CONSTRAINT chk_pais_sigla CHECK (LENGTH(sigla_coi) = 3),
     CONSTRAINT chk_continente CHECK (continente IN ('América', 'Europa', 'Ásia', 'África', 'Oceania'))
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE PAIS (
 
 CREATE TABLE DELEGACAO (
     id_delegacao INTEGER PRIMARY KEY AUTOINCREMENT,
-    sigla_coi CHAR(3) NO NULL UNIQUE,
+    sigla_coi CHAR(3) NOT NULL UNIQUE,
     chefe_delegacao VARCHAR(120) NOT NULL,
     ano_edicao INTEGER NOT NULL DEFAULT 2026,
     total_integrantes INTEGER NOT NULL DEFAULT 1,
@@ -260,7 +260,7 @@ CREATE TABLE RESULTADO (
     CONSTRAINT chk_resultado_colocacao CHECK (colocacao IS NULL OR colocacao >= 1),
     CONSTRAINT chk_resultado_wo CHECK (indicador_wo IN ('Sim', 'Não')),
     CONSTRAINT chk_resultado_doping CHECK (status_doping IN ('Limpo', 'Sob Investigação', 'Positivo/Anulado')),
-    CONSTRAINT chk_resultado_homogolacao CHECK (status_homologacao IN ('Pendente', 'Homologado', 'Rejeitado')),
+    CONSTRAINT chk_resultado_homologacao CHECK (status_homologacao IN ('Pendente', 'Homologado', 'Rejeitado')),
     CONSTRAINT chk_resultado_medalha CHECK (medalha_atribuida IN ('Ouro', 'Prata', 'Bronze', 'Nenhuma')),
     CONSTRAINT chk_resultado_pontos CHECK (pontos_gerados BETWEEN 0 AND 10),
     CONSTRAINT chk_regra_wo CHECK (
@@ -268,7 +268,7 @@ CREATE TABLE RESULTADO (
         (indicador_wo = 'Sim' AND colocacao IS NULL AND medalha_atribuida = 'Nenhuma' AND pontos_gerados = 0)
     ),
     CONSTRAINT chk_regra_doping CHECK (
-        (status_doping <> 'Positivo/Anulado') OR
+        (status_doping != 'Positivo/Anulado') OR
         (status_doping = 'Positivo/Anulado' AND colocacao IS NULL AND medalha_atribuida = 'Nenhuma' AND pontos_gerados = 0)
     )
 );
@@ -286,7 +286,7 @@ CREATE TABLE HOMOLOGACAO_RESULTADO (
     CONSTRAINT fk_homologacao_resultado FOREIGN KEY(id_resultado)
         REFERENCES RESULTADO(id_resultado) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_homologacao_arbitro FOREIGN KEY(id_arbitro)
-        REFERENCES ARBITRO(id_arbitro) ON DELETE RESTRICT ON UPDATE CASCADE,
+        REFERENCES ARBITRO(id_arbitro) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- ----------------------------------------------------------------------------
